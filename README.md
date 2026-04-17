@@ -195,7 +195,7 @@ user-auth-api/
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under group5/e License.
 =======
 # develop
 This repo contains source code of user registration and management system
