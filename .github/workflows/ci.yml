@@ -32,6 +32,20 @@ jobs:
         node-version: '18'
         cache: 'npm'
 
+    - name: Run Tests
+      run: |
+        # Clear any old cached data
+        npm run setup:mysql || true
+        # Run tests with the 'ci' flag
+        npm test -- --ci --detectOpenHandles
+      env:
+        NODE_ENV: test
+        DB_HOST: 127.0.0.1
+        DB_USER: testuser
+        DB_PASSWORD: testpass
+        DB_NAME: testdb
+        DB_PORT: 3306
+
     - name: Install dependencies
       run: npm install
 

@@ -3,7 +3,7 @@ const User = require('../../src/models/user');
 const bcrypt = require('bcrypt');
 
 // Mock the User model
-jest.mock('../../src/models/User');
+jest.mock('../../src/models/user');
 
 describe('Auth Controller', () => {
   beforeEach(() => {
