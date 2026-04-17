@@ -73,6 +73,12 @@ jobs:
         DB_NAME: testdb
         DB_PORT: 3306
 
+    - name: Run Tests
+      run: |
+        npm run setup:mysql
+        sleep 5
+        npm test
+
     - name: Upload coverage reports
       uses: codecov/codecov-action@v3
       with:
