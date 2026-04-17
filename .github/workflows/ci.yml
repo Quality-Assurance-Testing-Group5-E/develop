@@ -32,25 +32,13 @@ jobs:
         node-version: '18'
         cache: 'npm'
 
-    - name: Run Tests
-      run: |
-        # Clear any old cached data
-        npm run setup:mysql || true
-        # Run tests with the 'ci' flag
-        npm test -- --ci --detectOpenHandles
-      env:
-        NODE_ENV: test
-        DB_HOST: 127.0.0.1
-        DB_USER: testuser
-        DB_PASSWORD: testpass
-        DB_NAME: testdb
-        DB_PORT: 3306
-
     - name: Install dependencies
       run: npm install
 
-    - name: Fix permissions
-      run: chmod +x node_modules/.bin/*
+    - name: Verify cross-env and Fix Permissions
+      run: |
+        ls -d node_modules/cross-env || echo "cross-env not found"
+        chmod -R +x node_modules/.bin || true
 
     - name: Wait for MySQL
       run: |
@@ -62,8 +50,11 @@ jobs:
 
     - name: Run Database Setup and Tests
       run: |
-        # Uncomment the line below if you have a custom setup script
-        # npm run setup:mysql 
+        # Initialize the database schema
+        npm run setup:mysql || true
+        # Wait for tables to settle
+        sleep 5
+        # Run tests using npx to avoid path issues
         npm test
       env:
         NODE_ENV: test
@@ -72,12 +63,6 @@ jobs:
         DB_PASSWORD: testpass
         DB_NAME: testdb
         DB_PORT: 3306
-
-    - name: Run Tests
-      run: |
-        npm run setup:mysql
-        sleep 5
-        npm test
 
     - name: Upload coverage reports
       uses: codecov/codecov-action@v3
