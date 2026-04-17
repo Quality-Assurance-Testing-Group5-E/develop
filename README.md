@@ -1,3 +1,4 @@
+
 # User Authentication API
 
 A secure RESTful API for user registration and authentication with JWT tokens, built with Node.js, Express.js, and multiple database support (SQLite/MySQL).
@@ -195,3 +196,7 @@ user-auth-api/
 ## License
 
 This project is licensed under the MIT License.
+=======
+# develop
+This repo contains source code of user registration and management system
+>>>>>>> 9158c466d74e6d8bdf68281a9afe8b43b86890e6
