@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication API - Professional Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #ffffff;
+            overflow: hidden;
+            line-height: 1.6;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            width: 85vw;
+            height: 85vh;
+            max-width: 1400px;
+            max-height: 900px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 60px 80px;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow:
+                0 25px 100px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: slideIn 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide.dark {
+            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .slide.blue {
+            background: linear-gradient(145deg, #1e3a8a 0%, #1e40af 100%);
+        }
+
+        .slide.green {
+            background: linear-gradient(145deg, #047857 0%, #059669 100%);
+        }
+
+        .slide.purple {
+            background: linear-gradient(145deg, #7c3aed 0%, #8b5cf6 100%);
+        }
+
+        .slide.red {
+            background: linear-gradient(145deg, #dc2626 0%, #ef4444 100%);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-header {
+            margin-bottom: 40px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 20px;
+            text-align: center;
+        }
+
+        .slide-title {
+            font-size: 3.2em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: -0.02em;
+        }
+
+        .slide-subtitle {
+            font-size: 1.4em;
+            font-weight: 400;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 10px;
+        }
+
+        .slide-meta {
+            font-size: 1.1em;
+            color: rgba(255,255,255,0.6);
+            font-weight: 300;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+            justify-items: center;
+        }
+
+        .content-full {
+            max-width: 100%;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .feature-description {
+            color: rgba(255,255,255,0.8);
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 12px;
+            height: 12px;
+            background: #ff5f56;
+            border-radius: 50%;
+            box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27ca3f;
+        }
+
+        .code-language {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+
+        .endpoint-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .endpoint-table th {
+            background: rgba(255,255,255,0.1);
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1em;
+            color: #ffffff;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .endpoint-table td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.9);
+        }
+
+        .endpoint-table tr:hover {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .endpoint-method {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .method-post { background: #059669; color: white; }
+        .method-get { background: #0891b2; color: white; }
+        .method-put { background: #d97706; color: white; }
+        .method-delete { background: #dc2626; color: white; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .status-success { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid #22c55e; }
+        .status-error { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
+
+        .demo-step {
+            background: rgba(255,255,255,0.05);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .demo-step::before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: -12px;
+            top: 15px;
+            background: #3b82f6;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .demo-container {
+            counter-reset: step-counter;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .highlight-box::before {
+            content: '💡';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: linear-gradient(135deg, #3b82f6 0%, #9333ea 100%);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .team-member {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .team-member-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .team-member-role {
+            font-size: 0.9em;
+            color: rgba(255,255,255,0.7);
+            font-weight: 400;
+        }
+
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6 0%, #9333ea 100%);
+            transition: width 0.3s ease;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1001;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 30px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .control-btn {
+            padding: 16px 32px;
+            font-size: 1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .control-btn:hover:not(:disabled) {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(15px);
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .slide-timer {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(15px);
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .architecture-diagram {
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            padding: 20px 0;
+            margin: 30px 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .arch-layer {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .arch-layer-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .arch-layer-icon {
+            font-size: 1.8em;
+        }
+
+        .arch-components {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .arch-component {
+            background: rgba(0,0,0,0.3);
+            border-left: 3px solid #3b82f6;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .arch-component-strong {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .arch-connection {
+            text-align: center;
+            color: #3b82f6;
+            font-weight: 600;
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+
+        .test-results {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+
+        .success-indicator {
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        .error-indicator {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .info-indicator {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        .kbd-shortcut {
+            display: inline-block;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.8em;
+            font-family: 'Fira Code', monospace;
+            margin: 0 2px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        @media (max-width: 1200px) {
+            .slide {
+                width: 95vw;
+                height: 95vh;
+                padding: 40px 50px;
+            }
+
+            .slide-title {
+                font-size: 2.5em;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                width: 98vw;
+                height: 98vh;
+                padding: 30px 40px;
+            }
+
+            .slide-title {
+                font-size: 2em;
+            }
+
+            .controls {
+                bottom: 20px;
+                gap: 20px;
+            }
+
+            .control-btn {
+                padding: 12px 24px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- SLIDE 1: Title -->
+    <div class="slide active dark">
+        <div class="slide-header">
+            <h1 class="slide-title">User Authentication API</h1>
+            <p class="slide-subtitle">RESTful API for Secure User Registration & Management</p>
+            <p class="slide-meta">Professional Implementation with Enterprise Security Standards</p>
+        </div>
+
+        <div class="slide-content">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h2 style="color: rgba(255,255,255,0.9); font-size: 1.8em; font-weight: 600; margin-bottom: 10px;">Group Name: Group 5/E</h2>
+                <p style="color: rgba(255,255,255,0.7); font-size: 1.1em;">Victoria University - Bachelor of Software Engineering</p>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="team-member-name">Kizito Subek</div>
+                    <div class="team-member-role">Backend Developer</div>
+                    <div style="font-size: 0.8em; color: rgba(255,255,255,0.6); margin-top: 5px;">VU-BSF-2311-0340-DAY</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-member-name">Emmanuel Tombe</div>
+                    <div class="team-member-role">QA Engineer & Testing Lead</div>
+                    <div style="font-size: 0.8em; color: rgba(255,255,255,0.6); margin-top: 5px;">VU-BSF-2311-0351-EVE</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-member-name">Gloria</div>
+                    <div class="team-member-role">DevOps & Documentation</div>
+                    <div style="font-size: 0.8em; color: rgba(255,255,255,0.6); margin-top: 5px;">VU-BSF-2311-0362-DAY</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-member-name">Okiror Hillary</div>
+                    <div class="team-member-role">Security & Middleware</div>
+                    <div style="font-size: 0.8em; color: rgba(255,255,255,0.6); margin-top: 5px;">VU-BSF-2311-0373-EVE</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-member-name">Patrick</div>
+                    <div class="team-member-role">Frontend & API Integration</div>
+                    <div style="font-size: 0.8em; color: rgba(255,255,255,0.6); margin-top: 5px;">VU-BSF-2311-0384-DAY</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 2: Project Overview -->
+    <div class="slide blue">
+        <div class="slide-header">
+            <h1 class="slide-title">Project Overview</h1>
+            <p class="slide-subtitle">What We Built & Why It Matters</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-grid">
+                <div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🔐</span>
+                        <div class="feature-title">Secure Authentication</div>
+                        <div class="feature-description">
+                            JWT-based session management with bcrypt password hashing.
+                            Enterprise-grade security preventing common vulnerabilities.
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <span class="feature-icon">🧪</span>
+                        <div class="feature-title">Comprehensive Testing</div>
+                        <div class="feature-description">
+                            Unit, integration, and system tests with 9 passing checks across 4 suites.
+                            Automated CI pipeline and coverage reporting ensure reliability.
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="feature-card">
+                        <span class="feature-icon">📚</span>
+                        <div class="feature-title">Professional Documentation</div>
+                        <div class="feature-description">
+                            Swagger UI API explorer and Postman collection.
+                            Complete defect tracking and group reporting.
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <span class="feature-icon">⚡</span>
+                        <div class="feature-title">Production Ready</div>
+                        <div class="feature-description">
+                            Rate limiting, input validation, error handling.
+                            Scalable architecture with SQLite and mysql database.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: Technology Stack -->
+    <div class="slide purple">
+        <div class="slide-header">
+            <h1 class="slide-title">Technology Stack</h1>
+            <p class="slide-subtitle">Modern Tools & Frameworks Used</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-grid">
+                <div>
+                    <h3 style="color: #ffffff; margin-bottom: 20px;">Backend & Runtime</h3>
+                    <div class="feature-card">
+                        <div class="feature-title">Node.js + Express.js</div>
+                        <div class="feature-description">
+                            Fast, scalable server-side JavaScript runtime with robust web framework.
+                            Handles HTTP requests, routing, and middleware efficiently.
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-title">SQLite Database</div>
+                        <div class="feature-description">
+                            Lightweight, file-based database perfect for development and small-scale production.
+                            ACID compliant with excellent performance characteristics.
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="color: #ffffff; margin-bottom: 20px;">Security & Testing</h3>
+                    <div class="feature-card">
+                        <div class="feature-title">JWT + Bcrypt</div>
+                        <div class="feature-description">
+                            JSON Web Tokens for stateless authentication, bcrypt for secure password hashing.
+                            Industry-standard security practices implemented.
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-title">Jest + Supertest</div>
+                        <div class="feature-description">
+                            Comprehensive testing framework with HTTP endpoint testing capabilities.
+                            Automated test execution with detailed coverage reporting.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: API Endpoints -->
+    <div class="slide green">
+        <div class="slide-header">
+            <h1 class="slide-title">API Endpoints</h1>
+            <p class="slide-subtitle">Complete REST API Specification</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-full">
+                <table class="endpoint-table">
+                    <thead>
+                        <tr>
+                            <th>Endpoint</th>
+                            <th>Method</th>
+                            <th>Description</th>
+                            <th>Authentication</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>/api/auth/register</code></td>
+                            <td><span class="endpoint-method method-post">POST</span></td>
+                            <td>Create new user account with validation</td>
+                            <td>❌ Public</td>
+                        </tr>
+                        <tr>
+                            <td><code>/api/auth/login</code></td>
+                            <td><span class="endpoint-method method-post">POST</span></td>
+                            <td>Authenticate user and return JWT token</td>
+                            <td>❌ Public</td>
+                        </tr>
+                        <tr>
+                            <td><code>/api/users/me</code></td>
+                            <td><span class="endpoint-method method-get">GET</span></td>
+                            <td>Retrieve authenticated user's profile</td>
+                            <td>✅ JWT Required</td>
+                        </tr>
+                        <tr>
+                            <td><code>/api/users/me</code></td>
+                            <td><span class="endpoint-method method-put">PUT</span></td>
+                            <td>Update authenticated user's information</td>
+                            <td>✅ JWT Required</td>
+                        </tr>
+                        <tr>
+                            <td><code>/api/users/me</code></td>
+                            <td><span class="endpoint-method method-delete">DELETE</span></td>
+                            <td>Permanently delete user account</td>
+                            <td>✅ JWT Required</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box">
+                    <strong>Base URL:</strong> <code>http://localhost:5000</code><br>
+                    <strong>Content-Type:</strong> <code>application/json</code><br>
+                    <strong>Authentication:</strong> <code>Bearer {jwt_token}</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 5: Security Implementation -->
+    <div class="slide red">
+        <div class="slide-header">
+            <h1 class="slide-title">Security Implementation</h1>
+            <p class="slide-subtitle">Enterprise-Grade Security Measures</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-grid">
+                <div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🔒</span>
+                        <div class="feature-title">Password Security</div>
+                        <div class="feature-description">
+                            <strong>Bcrypt hashing</strong> with 10 salt rounds ensures passwords are never stored in plain text.
+                            Computational complexity prevents brute-force attacks.
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <span class="feature-icon">🎫</span>
+                        <div class="feature-title">JWT Authentication</div>
+                        <div class="feature-description">
+                            <strong>Stateless tokens</strong> with 24-hour expiration. Signed with secret keys to prevent tampering.
+                            Bearer token authentication for protected endpoints.
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🛡️</span>
+                        <div class="feature-title">Security Middleware</div>
+                        <div class="feature-description">
+                            <strong>Helmet.js</strong> adds HTTP security headers. Rate limiting prevents abuse.
+                            Input validation and sanitization protect against injection attacks.
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <span class="feature-icon">🚫</span>
+                        <div class="feature-title">Anti-Enumeration</div>
+                        <div class="feature-description">
+                            <strong>Generic error messages</strong> prevent user enumeration attacks.
+                            "Invalid credentials" for both wrong email and wrong password.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 6: Testing Strategy -->
+    <div class="slide blue">
+        <div class="slide-header">
+            <h1 class="slide-title">Testing Strategy</h1>
+            <p class="slide-subtitle">Three Levels of Quality Assurance</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-grid">
+                <div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🔧</span>
+                        <div class="feature-title">Unit Tests</div>
+                        <div class="feature-description">
+                            Test individual functions and modules in isolation using mocks.
+                            Verifies business logic without external dependencies.
+                        </div>
+                        <div class="status-badge status-success">PASS 6 tests</div>
+                    </div>
+
+                    <div class="feature-card">
+                        <span class="feature-icon">🔗</span>
+                        <div class="feature-title">Integration Tests</div>
+                        <div class="feature-description">
+                            Test API endpoints with real database but isolated components.
+                            Ensures endpoints work correctly end-to-end.
+                        </div>
+                        <div class="status-badge status-success">✓ 2 tests passed</div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🌐</span>
+                        <div class="feature-title">System Tests</div>
+                        <div class="feature-description">
+                            Complete user workflows from registration to account deletion.
+                            Tests the entire application as users would experience it.
+                        </div>
+                        <div class="status-badge status-success">✓ 1 test passed</div>
+                    </div>
+
+                    <div class="feature-card">
+                        <span class="feature-icon">📊</span>
+                        <div class="feature-title">Coverage Reports</div>
+                        <div class="feature-description">
+                            Jest generates coverage reports on full test runs and CI uploads lcov results.
+                            Coverage is reported automatically, but no minimum threshold is enforced yet.
+                        </div>
+                        <div class="status-badge status-success">PASS report generated</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 7: Development Process -->
+    <div class="slide purple">
+        <div class="slide-header">
+            <h1 class="slide-title">Development Process</h1>
+            <p class="slide-subtitle">Agile Workflow & Project Best Practices</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-full">
+                <div class="demo-container">
+                    <div class="demo-step">
+                        <strong>Planning & Requirements</strong><br>
+                        Collected functional requirements for user auth, registration, and profile management.
+                        Defined security, validation, and success criteria for the API.
+                    </div>
+
+                    <div class="demo-step">
+                        <strong>System Design</strong><br>
+                        Designed the REST API structure, database schema, and middleware flow.
+                        Planned JWT authentication, bcrypt password hashing, and endpoint security.
+                    </div>
+
+                    <div class="demo-step">
+                        <strong>Development</strong><br>
+                        Implemented controllers, models, routes, and middleware components.
+                        Built authentication, validation, error handling, and database access.
+                    </div>
+
+                    <div class="demo-step">
+                        <strong>Testing & Feedback</strong><br>
+                        Executed unit, integration, and system tests to verify feature behavior.
+                        Fixed defects, improved reliability, and made iterative enhancements.
+                    </div>
+
+                    <div class="demo-step">
+                        <strong>Documentation & Review</strong><br>
+                        Documented APIs with Swagger and published a Postman collection.
+                        Prepared reports, reviewed the CI workflow, and finalized code quality checks.
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Timeline:</strong> 2-3 weeks | <strong>Team Size:</strong> 5<br>
+                    <strong>Methodology:</strong> Agile with daily syncs, code reviews, and continuous testing
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 8: Live Demo Setup -->
+    <div class="slide green">
+        <div class="slide-header">
+            <h1 class="slide-title">🎬 Live Demonstration</h1>
+            <p class="slide-subtitle">Interactive API Testing in Real-Time</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-full">
+                <div class="demo-container">
+                    <div class="demo-step">
+                        <strong>Start the API Server</strong><br>
+                        Launch the Express.js server on port 5000 with all endpoints active.
+                    </div>
+
+                    <div class="demo-step">
+                        <strong>Open Swagger UI</strong><br>
+                        Interactive API documentation and testing interface at /api-docs.
+                    </div>
+
+                    <div class="demo-step">
+                        <strong>User Registration</strong><br>
+                        Create a new user account with email, username, and password validation.
+                    </div>
+
+                    <div class="demo-step">
+                        <strong>User Authentication</strong><br>
+                        Login with credentials and receive JWT token for subsequent requests.
+                    </div>
+
+                    <div class="demo-step">
+                        <strong>Profile Management</strong><br>
+                        View, update, and delete user profile using authenticated requests.
+                    </div>
+
+                    <div class="demo-step">
+                        <strong>Test Suite Execution</strong><br>
+                        Run automated tests to verify all functionality works correctly.
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Navigation:</strong> Use <span class="kbd-shortcut">←</span> <span class="kbd-shortcut">→</span> arrow keys or click buttons below<br>
+                    <strong>Duration:</strong> ~10 minutes for complete demonstration
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 9: Demo - Registration -->
+    <div class="slide dark">
+        <div class="slide-header">
+            <h1 class="slide-title">Demo: User Registration</h1>
+            <p class="slide-subtitle">Creating New User Accounts</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-grid">
+                <div>
+                    <div class="demo-container">
+                        <div class="demo-step">
+                            <strong>Navigate to Swagger UI</strong><br>
+                            Open <code>http://localhost:5000/api-docs</code> in your browser
+                        </div>
+
+                        <div class="demo-step">
+                            <strong>Find Register Endpoint</strong><br>
+                            Click on <code>POST /api/auth/register</code> to expand
+                        </div>
+
+                        <div class="demo-step">
+                            <strong>Click "Try it out"</strong><br>
+                            Enable interactive testing mode
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="code-block">
+                        <div class="code-language">JSON Request</div>
+                        <pre>{
+  "username": "demo_user",
+  "email": "demo@example.com",
+  "fullName": "Demo User",
+  "password": "SecurePass123"
+}</pre>
+                    </div>
+
+                    <div class="highlight-box">
+                        <strong>Expected Response:</strong> <span class="status-badge status-success">201 Created</span><br>
+                        <strong>Validates:</strong> Unique email, strong password, required fields
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 10: Demo - Login -->
+    <div class="slide blue">
+        <div class="slide-header">
+            <h1 class="slide-title">Demo: User Authentication</h1>
+            <p class="slide-subtitle">JWT Token Generation & Validation</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-grid">
+                <div>
+                    <div class="demo-container">
+                        <div class="demo-step">
+                            <strong>Find Login Endpoint</strong><br>
+                            Click on <code>POST /api/auth/login</code>
+                        </div>
+
+                        <div class="demo-step">
+                            <strong>Enter Credentials</strong><br>
+                            Use the same email and password from registration
+                        </div>
+
+                        <div class="demo-step">
+                            <strong>Execute Request</strong><br>
+                            Click "Execute" to authenticate
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="code-block">
+                        <div class="code-language">JSON Request</div>
+                        <pre>{
+  "email": "demo@example.com",
+  "password": "SecurePass123"
+}</pre>
+                    </div>
+
+                    <div class="highlight-box">
+                        <strong>Response includes:</strong><br>
+                        • JWT token for authentication<br>
+                        • User profile information<br>
+                        • <span class="status-badge status-success">200 OK</span> status<br>
+                        <strong>⚠️ Save the token for next steps!</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 11: Demo - Get Profile -->
+    <div class="slide purple">
+        <div class="slide-header">
+            <h1 class="slide-title">Demo: Profile Retrieval</h1>
+            <p class="slide-subtitle">Accessing Protected User Data</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-grid">
+                <div>
+                    <div class="demo-container">
+                        <div class="demo-step">
+                            <strong>Find Profile Endpoint</strong><br>
+                            Click on <code>GET /api/users/me</code>
+                        </div>
+
+                        <div class="demo-step">
+                            <strong>Configure Authentication</strong><br>
+                            Scroll to "Authorization" section
+                        </div>
+
+                        <div class="demo-step">
+                            <strong>Add Bearer Token</strong><br>
+                            Paste the JWT token from login step
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="code-block">
+                        <div class="code-language">HTTP Headers</div>
+                        <pre>Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+Content-Type: application/json</pre>
+                    </div>
+
+                    <div class="highlight-box">
+                        <strong>Response includes:</strong><br>
+                        • User ID, username, email<br>
+                        • Full name and creation timestamp<br>
+                        • <span class="status-badge status-success">200 OK</span> status<br>
+                        <strong>Without token:</strong> <span class="status-badge status-error">401 Unauthorized</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 12: Demo - Update Profile -->
+    <div class="slide green">
+        <div class="slide-header">
+            <h1 class="slide-title">Demo: Profile Updates</h1>
+            <p class="slide-subtitle">Modifying User Information Securely</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-grid">
+                <div>
+                    <div class="demo-container">
+                        <div class="demo-step">
+                            <strong>Find Update Endpoint</strong><br>
+                            Click on <code>PUT /api/users/me</code>
+                        </div>
+
+                        <div class="demo-step">
+                            <strong>Add Bearer Token</strong><br>
+                            Use the same JWT token from login
+                        </div>
+
+                        <div class="demo-step">
+                            <strong>Enter Update Data</strong><br>
+                            Modify fullName and/or email fields
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="code-block">
+                        <div class="code-language">JSON Request</div>
+                        <pre>{
+  "fullName": "Updated Demo User",
+  "email": "newemail@example.com"
+}</pre>
+                    </div>
+
+                    <div class="highlight-box">
+                        <strong>Validation performed:</strong><br>
+                        • Email uniqueness check<br>
+                        • Input sanitization<br>
+                        • Authentication verification<br>
+                        <strong>Success:</strong> <span class="status-badge status-success">200 OK</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 13: Demo - Delete Account -->
+    <div class="slide red">
+        <div class="slide-header">
+            <h1 class="slide-title">Demo: Account Deletion</h1>
+            <p class="slide-subtitle">Permanent User Account Removal</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-grid">
+                <div>
+                    <div class="demo-container">
+                        <div class="demo-step">
+                            <strong>Find Delete Endpoint</strong><br>
+                            Click on <code>DELETE /api/users/me</code>
+                        </div>
+
+                        <div class="demo-step">
+                            <strong>Add Bearer Token</strong><br>
+                            Use the JWT token from login
+                        </div>
+
+                        <div class="demo-step">
+                            <strong>Execute Deletion</strong><br>
+                            Click "Execute" to permanently delete account
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="code-block">
+                        <div class="code-language">HTTP Request</div>
+                        <pre>DELETE /api/users/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIs...</pre>
+                    </div>
+
+                    <div class="highlight-box">
+                        <strong>Result:</strong> <span class="status-badge status-success">200 OK</span><br>
+                        <strong>Account permanently removed from database</strong><br>
+                        <strong>Future login attempts will fail</strong><br>
+                        <strong>⚠️ This action cannot be undone!</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 14: Test Results -->
+    <div class="slide blue">
+        <div class="slide-header">
+            <h1 class="slide-title">Automated Test Execution</h1>
+            <p class="slide-subtitle">Quality Assurance Verification</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-full">
+                <div class="test-results">
+<strong>PASS SUCCESSFUL TEST RUNS:</strong><br>
+&#36; npm run test:unit<br>
+<span class="success-indicator">PASS</span> tests/unit/authController.test.js<br>
+  should register a new user successfully | should return 400 if email already exists<br>
+  should login a user successfully | should return 401 if user not found<br>
+  should return 401 if password is incorrect<br>
+<span class="success-indicator">PASS</span> tests/unit/userModel.test.js<br>
+  create and find user by email<br>
+Total: 6 passed<br>
+<br>
+&#36; npm run test:integration<br>
+<span class="success-indicator">PASS</span> tests/integration/authEndpoints.test.js<br>
+  POST /api/auth/register - success | POST /api/auth/login - success<br>
+Total: 2 passed<br>
+<br>
+&#36; npm run test:system<br>
+<span class="success-indicator">PASS</span> tests/system/workflow.test.js<br>
+  Complete user lifecycle: register - login - update - delete<br>
+Total: 1 passed<br>
+<br>
+<span class="info-indicator">==============================================</span><br>
+<strong>INFO: FULL TEST SUITE SUMMARY</strong><br>
+<br>
+&#36; npm test<br>
+<span class="success-indicator">PASS</span> Test Suites: 4 passed, 4 total<br>
+<span class="success-indicator">PASS</span> Tests: 9 passed, 9 total<br>
+<span class="success-indicator">PASS</span> Coverage report generated for src/**/*.js<br>
+<br>
+<span class="info-indicator">==============================================</span><br>
+<strong>FINAL: 9 tests passed | 4 suites passed | coverage report generated</strong>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Test Coverage Breakdown:</strong><br>
+                    • <strong>Unit Tests:</strong> Controller logic and data validation<br>
+                    • <strong>Integration Tests:</strong> API endpoints with real database<br>
+                    • <strong>System Tests:</strong> Complete user lifecycle workflows<br>
+                    • <strong>CI:</strong> Automated testing on every code change
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 15: System Architecture -->
+    <div class="slide purple">
+        <div class="slide-header">
+            <h1 class="slide-title">System Architecture</h1>
+            <p class="slide-subtitle">How All Components Work Together</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-full">
+                <div class="architecture-diagram">
+                    <!-- Layer 1: Client -->
+                    <div class="arch-layer">
+                        <div class="arch-layer-title">
+                            <span class="arch-layer-icon">👥</span>
+                            Client Applications
+                        </div>
+                        <div class="arch-components">
+                            <div class="arch-component">🌐 <span class="arch-component-strong">Swagger UI</span> - Interactive API Explorer</div>
+                            <div class="arch-component">📮 <span class="arch-component-strong">Postman</span> - API Testing Tool</div>
+                            <div class="arch-component">⚛️ <span class="arch-component-strong">Frontend Apps</span> - Web/Mobile Clients</div>
+                            <div class="arch-component">🔌 <span class="arch-component-strong">External Services</span> - Third-party Integration</div>
+                        </div>
+                    </div>
+
+                    <!-- Connection Arrow -->
+                    <div class="arch-connection">↓ HTTP Requests (JSON) ↓</div>
+
+                    <!-- Layer 2: Express Server -->
+                    <div class="arch-layer">
+                        <div class="arch-layer-title">
+                            <span class="arch-layer-icon">⚙️</span>
+                            Express.js Web Server
+                        </div>
+                        <div class="arch-components" style="grid-template-columns: 1fr;">
+                            <div><strong style="color: #3b82f6;">🛣️ Routes Layer</strong><br>
+                                • <code>/api/auth/register</code> → authRoutes.js<br>
+                                • <code>/api/auth/login</code> → authRoutes.js<br>
+                                • <code>/api/users/*</code> → userRoutes.js</div>
+                        </div>
+                        <div class="arch-components" style="grid-template-columns: 1fr; margin-top: 12px;">
+                            <div><strong style="color: #9333ea;">🎮 Controllers Layer</strong><br>
+                                • authController.js → Login & Registration Logic<br>
+                                • userController.js → Profile Management & CRUD Operations</div>
+                        </div>
+                        <div class="arch-components" style="grid-template-columns: 1fr; margin-top: 12px;">
+                            <div><strong style="color: #22c55e;">🔒 Middleware Layer</strong><br>
+                                • auth.js → JWT Token Verification & Validation<br>
+                                • validation.js → Input Sanitization & Schema Validation<br>
+                                • helmet.js → Security Headers & CORS Configuration</div>
+                        </div>
+                        <div class="arch-components" style="grid-template-columns: 1fr; margin-top: 12px;">
+                            <div><strong style="color: #f59e0b;">📊 Models Layer</strong><br>
+                                • user.js → Database Operations & ORM Integration</div>
+                        </div>
+                    </div>
+
+                    <!-- Connection Arrow -->
+                    <div class="arch-connection">↓ SQL Queries ↓</div>
+
+                    <!-- Layer 3: Database -->
+                    <div class="arch-layer">
+                        <div class="arch-layer-title">
+                            <span class="arch-layer-icon">💾</span>
+                            SQLite Database
+                        </div>
+                        <div class="arch-components" style="grid-template-columns: 1fr;">
+                            <div><strong style="color: #06b6d4;">📋 users Table Schema</strong><br>
+                                • <code>id</code> (INTEGER, PRIMARY KEY)<br>
+                                • <code>username</code> (TEXT, UNIQUE)<br>
+                                • <code>email</code> (TEXT, UNIQUE)<br>
+                                • <code>full_name</code> (TEXT)<br>
+                                • <code>password_hash</code> (TEXT, bcrypt encrypted)<br>
+                                • <code>created_at</code> (TIMESTAMP)<br>
+                                • <code>updated_at</code> (TIMESTAMP)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Architecture Benefits:</strong><br>
+                    • <strong>Separation of Concerns:</strong> Clear layer responsibilities<br>
+                    • <strong>Security:</strong> Multiple validation and protection layers<br>
+                    • <strong>Testability:</strong> Each layer can be tested independently<br>
+                    • <strong>Scalability:</strong> Easy to add new features and endpoints
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 16: Code Quality & Standards -->
+    <div class="slide green">
+        <div class="slide-header">
+            <h1 class="slide-title">Code Quality Standards</h1>
+            <p class="slide-subtitle">Professional Development Practices</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-grid">
+                <div>
+                    <div class="feature-card">
+                        <span class="feature-icon">📊</span>
+                        <div class="feature-title">Coverage Reports</div>
+                        <div class="feature-description">
+                            Jest creates coverage artifacts on each full test run.
+                            These reports make testing gaps visible and are uploaded by the CI workflow.
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <span class="feature-icon">🚨</span>
+                        <div class="feature-title">Error Handling</div>
+                        <div class="feature-description">
+                            Proper HTTP status codes and meaningful error messages.
+                            Graceful failure handling prevents application crashes.
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🔒</span>
+                        <div class="feature-title">Security Standards</div>
+                        <div class="feature-description">
+                            Password hashing, JWT validation, input sanitization.
+                            Protection against common web vulnerabilities.
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <span class="feature-icon">🔄</span>
+                        <div class="feature-title">CI Pipeline</div>
+                        <div class="feature-description">
+                            Automated testing runs on every push and pull request.
+                            Deployment can be added later as a separate workflow stage.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 17: Project Achievements -->
+    <div class="slide blue">
+        <div class="slide-header">
+            <h1 class="slide-title">Project Achievements</h1>
+            <p class="slide-subtitle">Key Milestones & Deliverables</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-full">
+                <div class="feature-card" style="margin-bottom: 30px;">
+                    <span class="feature-icon">✅</span>
+                    <div class="feature-title" style="margin-bottom: 15px;">Successfully Delivered</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 1em;">
+                        <div>
+                            <strong>✓</strong> Fully functional REST API (5 endpoints)<br>
+                            <strong>✓</strong> Enterprise-grade security implementation<br>
+                            <strong>✓</strong> 9 automated tests across 4 suites<br>
+                            <strong>✓</strong> Professional API documentation<br>
+                            <strong>✓</strong> Defect tracking & resolution (5 issues)<br>
+                        </div>
+                        <div>
+                            <strong>✓</strong> GitHub Actions CI pipeline for quality assurance<br>
+                            <strong>✓</strong> Comprehensive group reporting<br>
+                            <strong>✓</strong> Live demonstration capabilities<br>
+                            <strong>✓</strong> Production-ready code standards<br>
+                            <strong>✓</strong> Team collaboration & documentation<br>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Quality Metrics:</strong><br>
+                    • <strong>Code Coverage:</strong> generated locally and uploaded in CI<br>
+                    • <strong>Test Suites:</strong> 9 tests across 4 suites, all passing<br>
+                    • <strong>Security:</strong> Bcrypt, JWT, Helmet, rate limiting<br>
+                    • <strong>Documentation:</strong> Swagger UI, Postman, defect logs
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 18: Getting Started -->
+    <div class="slide purple">
+        <div class="slide-header">
+            <h1 class="slide-title">Getting Started</h1>
+            <p class="slide-subtitle">How to Run This Project</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-grid">
+                <div>
+                    <div class="feature-card">
+                        <span class="feature-icon">📦</span>
+                        <div class="feature-title">Installation</div>
+                        <div class="code-block" style="margin-top: 15px;">
+                            <div class="code-language">Terminal</div>
+                            <pre>git clone &lt;repository&gt;
+cd user-auth-api
+npm install</pre>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <span class="feature-icon">🚀</span>
+                        <div class="feature-title">Start Server</div>
+                        <div class="code-block" style="margin-top: 15px;">
+                            <div class="code-language">Terminal</div>
+                            <pre>npm start
+# Server runs on http://localhost:5000</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🧪</span>
+                        <div class="feature-title">Run Tests</div>
+                        <div class="code-block" style="margin-top: 15px;">
+                            <div class="code-language">Terminal</div>
+                            <pre>npm test          # All tests
+npm run test:unit     # Unit tests
+npm run test:integration  # Integration
+npm run test:system   # System tests</pre>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <span class="feature-icon">📚</span>
+                        <div class="feature-title">API Documentation</div>
+                        <div class="code-block" style="margin-top: 15px;">
+                            <div class="code-language">Browser</div>
+                            <pre>http://localhost:5000/api-docs</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 19: Project Structure -->
+    <div class="slide green">
+        <div class="slide-header">
+            <h1 class="slide-title">Project Structure</h1>
+            <p class="slide-subtitle">Clean, modular code organization</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">📁</span>
+                    <div class="feature-title">Source Code</div>
+                    <div class="feature-description" style="text-align:left;">
+                        <ul style="list-style: disc inside; margin-top: 12px; color: rgba(255,255,255,0.85);">
+                            <li><strong>app.js</strong> – Express app setup</li>
+                            <li><strong>server.js</strong> – Server startup</li>
+                            <li><strong>config/database.js</strong> – DB configuration</li>
+                            <li><strong>controllers/</strong> – Auth and user logic</li>
+                            <li><strong>middleware/</strong> – Auth, validation, middleware</li>
+                            <li><strong>models/user.js</strong> – DB operations</li>
+                            <li><strong>routes/</strong> – API route definitions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🧪</span>
+                    <div class="feature-title">Testing</div>
+                    <div class="feature-description" style="text-align:left;">
+                        <ul style="list-style: disc inside; margin-top: 12px; color: rgba(255,255,255,0.85);">
+                            <li><strong>tests/unit/</strong> – Unit tests for logic</li>
+                            <li><strong>tests/integration/</strong> – Endpoint behavior</li>
+                            <li><strong>tests/system/</strong> – Full workflow validation</li>
+                            <li><strong>jest.setup.js</strong> – Test environment setup</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">📦</span>
+                    <div class="feature-title">Project Files</div>
+                    <div class="feature-description" style="text-align:left;">
+                        <ul style="list-style: disc inside; margin-top: 12px; color: rgba(255,255,255,0.85);">
+                            <li><strong>package.json</strong> – scripts and dependencies</li>
+                            <li><strong>README.md</strong> – setup and usage</li>
+                            <li><strong>postman_collection.json</strong> – API tests</li>
+                            <li><strong>coverage/</strong> – test reports</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">📄</span>
+                    <div class="feature-title">Documentation</div>
+                    <div class="feature-description" style="text-align:left;">
+                        <ul style="list-style: disc inside; margin-top: 12px; color: rgba(255,255,255,0.85);">
+                            <li><strong>presentation-professional.html</strong> – slide deck</li>
+                            <li><strong>group-report.md</strong> – final report</li>
+                            <li><strong>group-contribution.md</strong> – team roles</li>
+                            <li><strong>defect-log.md</strong> – issue tracking</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 20: Lessons Learned -->
+    <div class="slide red">
+        <div class="slide-header">
+            <h1 class="slide-title">Lessons Learned</h1>
+            <p class="slide-subtitle">Key Takeaways & Best Practices</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-full">
+                <div class="content-grid">
+                    <div>
+                        <div class="feature-card">
+                            <span class="feature-icon">🔐</span>
+                            <div class="feature-title">Security First</div>
+                            <div class="feature-description">
+                                Security should be built into the application from day one, not added as an afterthought.
+                                Regular security audits and staying updated with best practices is crucial.
+                            </div>
+                        </div>
+
+                        <div class="feature-card">
+                            <span class="feature-icon">🧪</span>
+                            <div class="feature-title">Test-Driven Development</div>
+                            <div class="feature-description">
+                                Writing tests before or alongside code catches bugs early and ensures maintainable code.
+                                Multiple testing levels provide comprehensive quality assurance.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="feature-card">
+                            <span class="feature-icon">📚</span>
+                            <div class="feature-title">Documentation Matters</div>
+                            <div class="feature-description">
+                                Good documentation reduces support burden and helps with onboarding new team members.
+                                API documentation should be interactive and always up-to-date.
+                            </div>
+                        </div>
+
+                        <div class="feature-card">
+                            <span class="feature-icon">🤝</span>
+                            <div class="feature-title">Team Collaboration</div>
+                            <div class="feature-description">
+                                Regular code reviews, daily standups, and clear communication prevent misunderstandings.
+                                Well-defined roles and responsibilities ensure project success.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 21: Q&A -->
+    <div class="slide dark">
+        <div class="slide-header">
+            <h1 class="slide-title">Questions & Discussion</h1>
+            <p class="slide-subtitle">Open Floor for Technical Discussion</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-full">
+                <div class="content-grid">
+                    <div>
+                        <h3 style="color: #ffffff; margin-bottom: 20px;">Technical Topics</h3>
+                        <ul style="font-size: 1.1em; line-height: 1.8;">
+                            <li>• How JWT authentication works</li>
+                            <li>• Password hashing with bcrypt</li>
+                            <li>• Testing strategies & coverage</li>
+                            <li>• Database design decisions</li>
+                            <li>• API architecture patterns</li>
+                            <li>• Security best practices</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 style="color: #ffffff; margin-bottom: 20px;">Project Topics</h3>
+                        <ul style="font-size: 1.1em; line-height: 1.8;">
+                            <li>• Development process & methodology</li>
+                            <li>• Team collaboration challenges</li>
+                            <li>• Defect management process</li>
+                            <li>• CI pipeline implementation</li>
+                            <li>• Deployment considerations</li>
+                            <li>• Future enhancements</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="margin-top: 40px;">
+                    <strong>We're happy to discuss any aspect of the project!</strong><br>
+                    <strong>Thank you for your attention and interest in our work.</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 22: Contact & Resources -->
+    <div class="slide blue">
+        <div class="slide-header">
+            <h1 class="slide-title">Contact & Resources</h1>
+            <p class="slide-subtitle">Project Information & Support</p>
+        </div>
+
+        <div class="slide-content">
+            <div class="content-full">
+                <div class="content-grid">
+                    <div>
+                        <div class="feature-card">
+                            <span class="feature-icon">📁</span>
+                            <div class="feature-title">Project Repository</div>
+                            <div class="feature-description">
+                                <code>c:\Users\HP\Desktop\user-auth-api</code><br>
+                                Complete source code, tests, and documentation
+                            </div>
+                        </div>
+
+                        <div class="feature-card">
+                            <span class="feature-icon">🌐</span>
+                            <div class="feature-title">API Base URL</div>
+                            <div class="feature-description">
+                                <code>http://localhost:5000</code><br>
+                                When server is running
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="feature-card">
+                            <span class="feature-icon">📚</span>
+                            <div class="feature-title">API Documentation</div>
+                            <div class="feature-description">
+                                <code>http://localhost:5000/api-docs</code><br>
+                                Interactive Swagger UI
+                            </div>
+                        </div>
+
+                        <div class="feature-card">
+                            <span class="feature-icon">⚡</span>
+                            <div class="feature-title">Quick Start</div>
+                            <div class="code-block" style="margin-top: 15px;">
+                                <div class="code-language">Terminal</div>
+                                <pre>npm install && npm start</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="margin-top: 30px;">
+                    <strong>All project artifacts are available in the repository:</strong><br>
+                    • Source code & tests • Documentation • API specs • Test reports • Group deliverables
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button class="control-btn" id="prevBtn" onclick="changeSlide(-1)">
+            ← Previous
+        </button>
+        <button class="control-btn" id="nextBtn" onclick="changeSlide(1)">
+            Next →
+        </button>
+    </div>
+
+    <div class="slide-counter">
+        <span id="currentSlide">1</span> / <span id="totalSlides">22</span>
+    </div>
+
+    <div class="slide-timer">
+        <span id="slideTimer">00:00</span>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let startTime = Date.now();
+        let timerInterval;
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('slideTimer').textContent = `${minutes}:${seconds}`;
+        }
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+            document.getElementById('progressFill').style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+
+            // Reset timer on slide change
+            startTimer();
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            else if (e.key === 'ArrowRight') changeSlide(1);
+            else if (e.key === 'Home') showSlide(0);
+            else if (e.key === 'End') showSlide(totalSlides - 1);
+        });
+
+        // Touch/swipe support for mobile
+        let startX = 0;
+        document.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const endX = e.changedTouches[0].clientX;
+            const diffX = startX - endX;
+
+            if (Math.abs(diffX) > 50) {
+                if (diffX > 0) changeSlide(1); // Swipe left - next
+                else changeSlide(-1); // Swipe right - previous
+            }
+        });
+
+        // Initialize
+        document.getElementById('totalSlides').textContent = totalSlides;
+        showSlide(0);
+        startTimer();
+    </script>
+</body>
+</html>

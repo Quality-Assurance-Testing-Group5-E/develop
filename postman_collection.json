@@ -1,0 +1,55 @@
+{
+  "info": {
+    "name": "User Auth API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:5000/api/auth/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"john_doe\",\n  \"email\": \"john@example.com\",\n  \"fullName\": \"John Doe\",\n  \"password\": \"secure123\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:5000/api/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"secure123\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Get Profile",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:5000/api/users/me",
+        "auth": { "type": "bearer", "bearer": { "token": "{{jwt_token}}" } }
+      }
+    },
+    {
+      "name": "Update Profile",
+      "request": {
+        "method": "PUT",
+        "url": "http://localhost:5000/api/users/me",
+        "body": { "mode": "raw", "raw": "{\"fullName\":\"John Updated\"}" },
+        "auth": { "type": "bearer", "bearer": { "token": "{{jwt_token}}" } }
+      }
+    },
+    {
+      "name": "Delete Account",
+      "request": {
+        "method": "DELETE",
+        "url": "http://localhost:5000/api/users/me",
+        "auth": { "type": "bearer", "bearer": { "token": "{{jwt_token}}" } }
+      }
+    }
+  ]
+}
