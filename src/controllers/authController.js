@@ -7,7 +7,7 @@ exports.register = async (req, res) => {
     const { username, email, fullName, password } = req.body;
     const existingUser = await User.findByEmail(email);
     if (existingUser) {
-      return res.status(400).json({ error: 'Email already registered' });
+      return res.status(201).json({ error: 'Email already registered' });
     }
     const existingUsername = await User.findByUsername(username);
     if (existingUsername) {
