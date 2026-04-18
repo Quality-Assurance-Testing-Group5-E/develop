@@ -28,7 +28,7 @@ var addSorting = (function() {
         const searchValue = document.getElementById('fileSearch').value;
         const rows = document.getElementsByTagName('tbody')[0].children;
 
-        // Try to create a RegExp from the searchValue. If it fails (invalid regex),
+        // Trying to create a RegExp from the searchValue. If it fails (invalid regex),
         // it will be treated as a plain text search
         let searchRegex;
         try {
