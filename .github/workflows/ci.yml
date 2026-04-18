@@ -23,17 +23,24 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
+    # 1. Upgraded to v6 to fix Node 20 deprecation warnings
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
+    # 2. Upgraded to v6 and Node 24 for 2026 compatibility
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
-        node-version: '18'
+        node-version: '24'
         cache: 'npm'
 
+    # 3. Use 'npm ci' instead of 'install' for a clean, reliable CI build
     - name: Install dependencies
-      run: npm install
+      run: npm ci
+
+    # 4. CRITICAL: Rebuild sqlite3 specifically for this Linux runner
+    - name: Rebuild native modules
+      run: npm rebuild sqlite3
 
     - name: Verify cross-env and Fix Permissions
       run: |
@@ -50,11 +57,8 @@ jobs:
 
     - name: Run Database Setup and Tests
       run: |
-        # Initialize the database schema
         npm run setup:mysql || true
-        # Wait for tables to settle
         sleep 5
-        # Run tests using npx to avoid path issues
         npm test
       env:
         NODE_ENV: test
@@ -65,7 +69,7 @@ jobs:
         DB_PORT: 3306
 
     - name: Upload coverage reports
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4 # Upgraded version
       with:
         file: ./coverage/lcov.info
         flags: unittests
