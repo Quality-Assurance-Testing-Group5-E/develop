@@ -28,7 +28,7 @@ We logged 5 defects during development (see defect-log.md). All were resolved an
 The CI pipeline (`.github/workflows/ci.yml`) installs dependencies, runs all tests, and uploads coverage reports. This ensures that only verified code is merged.
 
 ## 7. Results & Evidence
-- All 18 tests pass.
+- All 9 tests pass.
 - Code coverage > 90%.
 - API responds with proper HTTP status codes and validation messages.
 
