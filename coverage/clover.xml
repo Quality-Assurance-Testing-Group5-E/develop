@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1776517051701" clover="3.2.0">
-  <project timestamp="1776517051701" name="All files">
+<coverage generated="1776547243023" clover="3.2.0">
+  <project timestamp="1776547243023" name="All files">
     <metrics statements="221" coveredstatements="144" conditionals="90" coveredconditionals="39" methods="30" coveredmethods="12" elements="341" coveredelements="195" complexity="0" loc="221" ncloc="221" packages="6" files="10" classes="10"/>
     <package name="src">
       <metrics statements="31" coveredstatements="20" conditionals="6" coveredconditionals="2" methods="3" coveredmethods="0"/>
-      <file name="app.js" path="C:\Users\HP\Desktop\user-auth-api\src\app.js">
+      <file name="app.js" path="C:\Users\HP\develop\src\app.js">
         <metrics statements="25" coveredstatements="20" conditionals="4" coveredconditionals="2" methods="2" coveredmethods="0"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
@@ -32,7 +32,7 @@
         <line num="44" count="0" type="stmt"/>
         <line num="47" count="2" type="stmt"/>
       </file>
-      <file name="server.js" path="C:\Users\HP\Desktop\user-auth-api\src\server.js">
+      <file name="server.js" path="C:\Users\HP\develop\src\server.js">
         <metrics statements="6" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
@@ -44,7 +44,7 @@
     </package>
     <package name="src.config">
       <metrics statements="18" coveredstatements="11" conditionals="12" coveredconditionals="6" methods="2" coveredmethods="1"/>
-      <file name="database.js" path="C:\Users\HP\Desktop\user-auth-api\src\config\database.js">
+      <file name="database.js" path="C:\Users\HP\develop\src\config\database.js">
         <metrics statements="18" coveredstatements="11" conditionals="12" coveredconditionals="6" methods="2" coveredmethods="1"/>
         <line num="1" count="5" type="stmt"/>
         <line num="2" count="5" type="stmt"/>
@@ -68,7 +68,7 @@
     </package>
     <package name="src.controllers">
       <metrics statements="57" coveredstatements="41" conditionals="24" coveredconditionals="12" methods="5" coveredmethods="4"/>
-      <file name="authController.js" path="C:\Users\HP\Desktop\user-auth-api\src\controllers\authController.js">
+      <file name="authController.js" path="C:\Users\HP\develop\src\controllers\authController.js">
         <metrics statements="29" coveredstatements="24" conditionals="8" coveredconditionals="7" methods="2" coveredmethods="2"/>
         <line num="1" count="3" type="stmt"/>
         <line num="2" count="3" type="stmt"/>
@@ -100,7 +100,7 @@
         <line num="38" count="0" type="stmt"/>
         <line num="39" count="0" type="stmt"/>
       </file>
-      <file name="userController.js" path="C:\Users\HP\Desktop\user-auth-api\src\controllers\userController.js">
+      <file name="userController.js" path="C:\Users\HP\develop\src\controllers\userController.js">
         <metrics statements="28" coveredstatements="17" conditionals="16" coveredconditionals="5" methods="3" coveredmethods="2"/>
         <line num="1" count="2" type="stmt"/>
         <line num="3" count="2" type="stmt"/>
@@ -134,7 +134,7 @@
     </package>
     <package name="src.middleware">
       <metrics statements="21" coveredstatements="18" conditionals="6" coveredconditionals="4" methods="2" coveredmethods="2"/>
-      <file name="auth.js" path="C:\Users\HP\Desktop\user-auth-api\src\middleware\auth.js">
+      <file name="auth.js" path="C:\Users\HP\develop\src\middleware\auth.js">
         <metrics statements="11" coveredstatements="9" conditionals="4" coveredconditionals="3" methods="1" coveredmethods="1"/>
         <line num="1" count="2" type="stmt"/>
         <line num="3" count="2" type="stmt"/>
@@ -148,7 +148,7 @@
         <line num="12" count="2" type="stmt"/>
         <line num="14" count="0" type="stmt"/>
       </file>
-      <file name="validation.js" path="C:\Users\HP\Desktop\user-auth-api\src\middleware\validation.js">
+      <file name="validation.js" path="C:\Users\HP\develop\src\middleware\validation.js">
         <metrics statements="10" coveredstatements="9" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="1" count="2" type="stmt"/>
         <line num="3" count="2" type="stmt"/>
@@ -164,7 +164,7 @@
     </package>
     <package name="src.models">
       <metrics statements="77" coveredstatements="37" conditionals="42" coveredconditionals="15" methods="18" coveredmethods="5"/>
-      <file name="user.js" path="C:\Users\HP\Desktop\user-auth-api\src\models\user.js">
+      <file name="user.js" path="C:\Users\HP\develop\src\models\user.js">
         <metrics statements="77" coveredstatements="37" conditionals="42" coveredconditionals="15" methods="18" coveredmethods="5"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -247,7 +247,7 @@
     </package>
     <package name="src.routes">
       <metrics statements="17" coveredstatements="17" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="authRoutes.js" path="C:\Users\HP\Desktop\user-auth-api\src\routes\authRoutes.js">
+      <file name="authRoutes.js" path="C:\Users\HP\develop\src\routes\authRoutes.js">
         <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
@@ -257,7 +257,7 @@
         <line num="132" count="2" type="stmt"/>
         <line num="134" count="2" type="stmt"/>
       </file>
-      <file name="userRoutes.js" path="C:\Users\HP\Desktop\user-auth-api\src\routes\userRoutes.js">
+      <file name="userRoutes.js" path="C:\Users\HP\develop\src\routes\userRoutes.js">
         <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
