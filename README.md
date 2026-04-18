@@ -24,8 +24,8 @@ A secure RESTful API for user registration and authentication with JWT tokens, b
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd user-auth-api
+git clone <https://github.com/Quality-Assurance-Testing-Group5-E/develop.git>
+cd develop
 ```
 
 2. Install dependencies:
