@@ -7,7 +7,7 @@
 
 **Team Members:**
 - Kizito Subek
-- Emmanuel Tombe
+- Emmanuel Likambo
 - Gloria
 - Okiror Hillary
 - Patrick
