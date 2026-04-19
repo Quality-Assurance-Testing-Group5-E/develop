@@ -1,6 +1,6 @@
 # Group Report – User Authentication API
 
-**Team Members:** Kizito Subek, Emmanuel Tombe, Gloria, Okiror Hillary, Patrick
+**Team Members:** Kizito Subek, Emmanuel Tombe, Nabawanuka Gloria, Okiror Hillary, Patrick
 
 ## 1. Introduction
 We developed a RESTful API for user registration and authentication with full CRUD operations on user profiles. The system ensures secure password storage (bcrypt), JWT-based sessions, input validation, and error handling.
