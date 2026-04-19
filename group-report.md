@@ -16,7 +16,7 @@ We applied three testing levels:
 - **Integration Testing**: API endpoints using Supertest with a real in-memory database.
 - **System Testing**: End-to-end user workflows (register → login → update → delete).
 
-## 4. Test Automation & CI/CD
+## 4. Test Automation & CI/CD pipeline
 - Automated tests run on every push via GitHub Actions.
 - Coverage thresholds enforced (minimum 85%).
 - Postman collection shared for manual exploration.
