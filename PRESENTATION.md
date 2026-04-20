@@ -6,7 +6,7 @@
 ## RESTful API for Secure User Registration & Management
 
 **Team Members:**
-- Kizito Subek
+- Kizito Subek Pio
 - Emmanuel Tombe
 - Gloria
 - Okiror Hillary
